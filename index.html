@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VẬT LÍ 12 - SÁCH GIÁO KHOA ĐỘNG 3D (FULL POP-UP BOOK)</title>
+  
+  <link rel="stylesheet" href="style.css?v=5.1">
+
+  <!-- Google Fonts: Nunito, Cabin, Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@600;700;800&family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+
+  <!-- Three.js & OrbitControls -->
+  <script src="libs/three.min.js"></script>
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+    }
+  </script>
+  <script src="libs/OrbitControls.js"></script>
+  <script>
+    if (typeof THREE.OrbitControls === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+    }
+  </script>
+  <script src="libs/GLTFLoader.js"></script>
+  <script>
+    if (typeof THREE.GLTFLoader === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+
+  <!-- ================= FULL 3D CANVAS ================= -->
+  <div id="webgl-container"></div>
+
+  <!-- ================= TOP FLOATING HUD ================= -->
+  <header class="hud-topbar">
+    <div class="hud-brand" onclick="goToCover()">
+      <span class="hud-logo-atom">⚛️</span>
+      <div>
+        <span class="hud-series">KẾT NỐI TRI THỨC VỚI CUỘC SỐNG</span>
+        <h1 class="hud-title">VẬT LÍ 12 <span class="badge-popup">SÁCH NỔI 3D POP-UP</span></h1>
+      </div>
+    </div>
+
+    <div class="hud-lesson-info">
+      <span class="hud-chapter">CHƯƠNG I: VẬT LÍ NHIỆT</span>
+      <span class="hud-lesson">BÀI 1: CẤU TRÚC CỦA CHẤT. SỰ CHUYỂN THỂ</span>
+    </div>
+
+    <div class="hud-page-nav">
+      <button id="btnCover" class="btn-hud" onclick="goToCover()">📕 Bìa Sách</button>
+      <button id="btnPrevSpread" class="btn-hud" onclick="flipPrevSpread()">❮ Lật Về Trước</button>
+      <span id="hudPageTracker" class="hud-page-badge">Trang 6 - 7</span>
+      <button id="btnNextSpread" class="btn-hud" onclick="flipNextSpread()">Lật Tiếp ❯</button>
+      <button id="btnFocusModel" class="btn-hud highlight-cam" title="Phóng to & nhìn trực diện cận cảnh mô hình 3D" onclick="focusCurrentModel()">🔍 Cận Cảnh</button>
+      <button id="btnTopDown" class="btn-hud icon" title="Góc nhìn thẳng trực diện từ trên xuống" onclick="setTopDownView()">📐</button>
+      <button id="btnResetCamera" class="btn-hud icon" title="Góc toàn cảnh sách 45°" onclick="resetCameraView()">🎯</button>
+      <button id="btnAudioToggle" class="btn-hud icon" title="Bật/Tắt âm thanh & giọng đọc">🔊</button>
+      <button id="btnHelp" class="btn-hud icon" title="Hướng dẫn tương tác" onclick="openHelpModal()">❓</button>
+    </div>
+  </header>
+
+  <!-- ================= 3D INTERACTION DOCK (BOTTOM) ================= -->
+  <div class="hud-bottom-dock">
+    
+    <!-- CONTROLS FOR SPREAD 1 (TRANG 6 & 7) -->
+    <div class="dock-section active" id="dockSpread1">
+      <div class="dock-group">
+        <span class="dock-label">🔬 MODULE 1: THÍ NGHIỆM BROWN (TRANG 6)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnToggleBrown3D" onclick="toggleModule1Popup()">🔍 Mở Giọt Nước 3D (Đang gập)</button>
+          <div class="slider-control" id="ctrlBrownTemp" style="display: none;">
+            <span>🌡️ Nhiệt độ: <strong id="lblBrownTemp">30</strong>°C</span>
+            <input type="range" id="sliderBrownTemp" min="0" max="100" value="30">
+          </div>
+          <button class="btn-action" id="btnBrownTrail" onclick="toggleBrownTrail()" style="display: none;">🔴 Quỹ Đạo Đỏ</button>
+          <button class="btn-action" id="btnToggleBrownHolo" onclick="toggleRobertBrownHologram()">✨ Gặp Robert Brown</button>
+          <button class="btn-action" onclick="triggerEinsteinHologram()">🔍 Einstein 1905</button>
+        </div>
+      </div>
+
+      <div class="dock-divider"></div>
+
+      <div class="dock-group">
+        <span class="dock-label">🧊 MODULE 2: SO SÁNH 3 THỂ (TRANG 7)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnToggleStates3D" onclick="toggleModule2Popup()">🧊 Mở 3 Khối Hộp 3D (Đang gập)</button>
+          <button class="btn-action" id="btnDockSprings" onclick="toggleSpringBonds()" style="display: none;">🔗 Lò Xo Lực Liên Kết</button>
+          <button class="btn-action highlight" id="btnDockPiston" onclick="togglePistonCompression()" style="display: none;">🔽 Nén Pittông 3D</button>
+        </div>
+      </div>
+
+      <div class="dock-divider"></div>
+
+      <div class="dock-group">
+        <span class="dock-label">🔄 HÌNH 1.4: TAM GIÁC CHUYỂN THỂ (TRANG 7)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnToggleTriangle3D" onclick="toggleTrianglePopup()">🔄 Mở Tam Giác Chuyển Thể (Đang gập)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS FOR SPREAD 2 (TRANG 8 & 9) -->
+    <div class="dock-section" id="dockSpread2">
+      <div class="dock-group">
+        <span class="dock-label">🔥 MODULE 3: ĐÈN CỒN & ĐỒ THỊ SÔI HÌNH 1.5 (TRANG 8)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnToggleMelting3D" onclick="toggleModule3Popup()">🔥 Mở Đèn Cồn & Đồ Thị 3D (Đang gập)</button>
+          <button class="btn-action highlight" id="btnDockMelting" onclick="playMeltingTimeline()" style="display: none;">▶ Bắt Đầu Đun Lửa & Vẽ Đồ Thị</button>
+          <span class="dock-status-badge" id="lblMeltingTempDisplay" style="display: none;">20°C (Nước lỏng)</span>
+          <button class="btn-action" onclick="runBoilingGraphAnim()">📈 Chạy Đồ Thị Sôi (Hình 1.5)</button>
+        </div>
+      </div>
+
+      <div class="dock-divider"></div>
+
+      <div class="dock-group">
+        <span class="dock-label">💎 HÌNH 1.6: TINH THỂ MUỐI ĂN NACL (TRANG 8)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnToggleNacl3D" onclick="toggleModule4Popup()">💎 Mở Mạng Tinh Thể NaCl (Đang gập)</button>
+        </div>
+      </div>
+
+      <div class="dock-divider"></div>
+
+      <div class="dock-group">
+        <span class="dock-label">📈 HÌNH 1.7: ĐỒ THỊ NÓNG CHẢY (TRANG 9)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnToggleMeltingGraph3D" onclick="toggleMeltingGraphPopup()">📈 Mở Đồ Thị Nóng Chảy 3D (Đang gập)</button>
+          <button class="btn-action highlight" id="btnPlayMeltingGraph" onclick="playMeltingGraphTimeline()" style="display: none;">▶ Chạy Tiến Trình Nóng Chảy</button>
+          <button class="btn-action" onclick="focusCurrentModel()">🔍 Góc Trực Diện Cận Cảnh</button>
+          <button class="btn-action" onclick="showMeltingGraphDetailCard()">📖 Giải Thích Hình 1.7</button>
+        </div>
+      </div>
+
+      <div class="dock-divider"></div>
+
+      <div class="dock-group">
+        <span class="dock-label">⚡ HÌNH 1.8: THỂ PLASMA MẶT TRỜI (TRANG 9)</span>
+        <div class="dock-controls">
+          <button class="btn-action highlight" id="btnTogglePlasma3D" onclick="togglePlasmaPopup()">⚡ Mở Luồng Plasma 3D (Đang gập)</button>
+          <button class="btn-action" onclick="showPlasmaDetailCard()">📖 Hiện Tượng & Bản Chất Plasma</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= 3D HINT OVERLAY ================= -->
+  <div class="hud-orbit-hint" id="hudHint">
+    <span>💡 <strong>Chạm vào các huy hiệu phát sáng trong sách</strong> hoặc nút bên dưới để bật Pop-Up mô hình 3D!</span>
+  </div>
+
+  <!-- ================= SCIENTIST 3D SPEECH HUD ================= -->
+  <div class="scientist-speech-card" id="scSpeechCard">
+    <button class="btn-close-speech" onclick="closeScientistSpeech()">✕</button>
+    <div class="sc-speech-header">
+      <img id="scAvatar" src="assets/scientists/robert_brown_holo.png" alt="Nhà bác học">
+      <div class="sc-meta">
+        <h4 id="scName">Robert Brown</h4>
+        <span id="scRole">Hologram Live 1827</span>
+      </div>
+      <div class="sc-voice-wave" id="scVoiceWave">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <p class="sc-dialogue-text" id="scDialogue">...</p>
+    <div class="sc-action-row">
+      <button class="btn-speech-control play" onclick="speakCurrentScientist()">🔊 Nghe Lại Giọng</button>
+      <button class="btn-speech-control stop" onclick="stopCurrentScientistSpeech()">⏹ Dừng Giọng</button>
+    </div>
+  </div>
+
+  <!-- ================= 3D PHASE TRANSITION DETAIL CARD ================= -->
+  <div class="phase-detail-card" id="phaseDetailCard">
+    <button class="btn-close-speech" onclick="closePhaseDetail()">✕</button>
+    <div class="phase-detail-header">
+      <span class="phase-icon" id="phaseIcon">🔄</span>
+      <h4 id="phaseTitle">Cơ chế Chuyển Thể</h4>
+    </div>
+    <p class="phase-text" id="phaseDesc">...</p>
+  </div>
+
+    <!-- ================= 3D PLASMA DETAIL CARD ================= -->
+  <div class="plasma-detail-card" id="plasmaDetailCard">
+    <button class="btn-close-speech" onclick="closePlasmaDetailCard()">✕</button>
+    <div class="plasma-detail-header">
+      <span class="plasma-icon">⚡</span>
+      <div style="flex: 1;">
+        <h4>THỂ PLASMA (TRẠNG THÁI THỨ TƯ CỦA VẬT CHẤT)</h4>
+        <span class="plasma-subtitle">Vật lí 12 - Kết Nối Tri Thức (Hình 1.8 Trang 9)</span>
+      </div>
+      <div class="sc-voice-wave" id="plasmaVoiceWave">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="plasma-body">
+      <div class="plasma-info-grid">
+        <div class="plasma-info-item">
+          <strong>☀️ > 99% Vật Chất Vũ Trụ</strong>
+          <p>Mặt Trời, các ngôi sao, tinh vân và gió mặt trời đều ở thể plasma ở nhiệt độ từ hàng triệu đến hàng chục triệu độ K.</p>
+        </div>
+        <div class="plasma-info-item">
+          <strong>⚡ Bản Chất Ion Hoá Toàn Phần</strong>
+          <p>Ở nhiệt độ cực cao, va chạm nhiệt làm electron bứt hoàn toàn khỏi hạt nhân, tạo hỗn hợp ion dương và electron tự do chuyển động hỗn loạn, dẫn điện siêu việt.</p>
+        </div>
+        <div class="plasma-info-item">
+          <strong>🌍 Plasma Tự Nhiên Trên Trái Đất</strong>
+          <p>Tia sét (đạt ~30.000 K, nóng gấp 5 lần bề mặt Mặt Trời) và Cực quang (Aurora) khi gió plasma Mặt Trời tương tác với từ quyển Trái Đất.</p>
+        </div>
+        <div class="plasma-info-item highlight">
+          <strong>🚀 Công Nghệ Tương Lai Nhân Loại</strong>
+          <p>Lò phản ứng nhiệt hạch Tokamak (ITER) dùng từ trường giam giữ plasma 150 triệu °C để tạo năng lượng sạch vô tận; động cơ đẩy ion plasma vũ trụ.</p>
+        </div>
+      </div>
+      <div class="sc-action-row" style="margin-top: 14px;">
+        <button class="btn-speech-control play" onclick="speakPlasmaExplanation()">🔊 Nghe Đọc Nội Dung Hiện Tượng</button>
+        <button class="btn-speech-control stop" onclick="stopPlasmaSpeech()">⏹ Dừng Giọng</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- ================= 3D HÌNH 1.7 MELTING GRAPH DETAIL CARD ================= -->
+      <!-- ================= 3D HÌNH 1.7 MELTING GRAPH DETAIL CARD ================= -->
+  <div class="melting-graph-detail-card" id="meltingGraphDetailCard">
+    <button class="btn-close-speech" onclick="closeMeltingGraphDetailCard()">✕</button>
+    <div class="melting-graph-header">
+      <span class="mg-icon">📈</span>
+      <div style="flex: 1;">
+        <h4>HÌNH 1.7: ĐỒ THỊ NÓNG CHẢY CHẤT RẮN KẾT TINH</h4>
+        <span class="mg-subtitle">Vật lí 12 - Kết Nối Tri Thức (Mục b Trang 9)</span>
+      </div>
+      <div class="sc-voice-wave" id="meltingGraphVoiceWave">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="mg-body">
+      <div class="mg-stage-grid">
+        <div class="mg-stage-box stage-a">
+          <strong>Giai đoạn a: T &lt; t<sub>c</sub> (Chất rắn)</strong>
+          <p>Chất rắn nhận nhiệt lượng, động năng dao động của các phân tử tại nút mạng tinh thể tăng dần &rarr; Nhiệt độ vật rắn tăng dần.</p>
+        </div>
+        <div class="mg-stage-box stage-b">
+          <strong>Giai đoạn b: T = t<sub>c</sub> (ĐANG NÓNG CHẢY - NẰM NGANG)</strong>
+          <p><strong>Nhiệt độ KHÔNG ĐỔI dù vẫn nhận nhiệt!</strong> Toàn bộ nhiệt lượng lúc này dùng để <em>bẻ gãy các liên kết mạng tinh thể</em> chuyển thành thể lỏng.</p>
+        </div>
+        <div class="mg-stage-box stage-c">
+          <strong>Giai đoạn c: T &gt; t<sub>c</sub> (Chất lỏng)</strong>
+          <p>Sau khi nóng chảy hoàn toàn, các phân tử chất lỏng tiếp tục nhận nhiệt làm tăng vận tốc trượt đổi chỗ &rarr; Nhiệt độ chất lỏng tiếp tục tăng.</p>
+        </div>
+      </div>
+      <div class="sc-action-row" style="margin-top: 14px;">
+        <button class="btn-speech-control play" onclick="speakMeltingGraphExplanation()">🔊 Nghe Giải Thích Câu 1 & 2 SGK</button>
+        <button class="btn-speech-control stop" onclick="stopMeltingGraphSpeech()">⏹ Dừng Giọng</button>
+        <button class="btn-speech-control" style="background: rgba(0, 229, 255, 0.25); border-color: #00e5ff; color: #00ffff;" onclick="focusCurrentModel()">🔍 Phóng To Trực Diện</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= HELP MODAL ================= -->
+  <div class="help-backdrop" id="helpModal">
+    <div class="help-card">
+      <button class="btn-close-speech" onclick="closeHelpModal()">✕</button>
+      <h2>🌟 Hướng Dẫn Trải Nghiệm Sách Nổi 3D Pop-Up</h2>
+      <ul class="help-list">
+        <li>📖 <strong>Trang sách sạch sẽ & rõ chữ:</strong> Khi mở sách, các mô hình 3D nằm gọn gàng bên trong trang sách để bạn đọc trọn vẹn văn bản và công thức.</li>
+        <li>👆 <strong>Chạm để bật Pop-Up:</strong> Hãy <strong>click vào các huy hiệu phát sáng nhấp nháy</strong> (hoặc bấm nút dưới thanh điều khiển), mô hình 3D sẽ <strong>nảy trồi lên (Pop-Up)</strong> khỏi mặt giấy để bạn tương tác!</li>
+        <li>✕ <strong>Thu gọn khi cần:</strong> Chạm lại vào mô hình hoặc nút <em>"✕ Thu Gọn"</em> để gấp phẳng mô hình trở lại vào trang sách.</li>
+        <li>🔬 <strong>Quả cầu giọt nước Brown (Trang 6):</strong> Hạt phấn hoa vàng bị hàng trăm phân tử nước va đập tạo đường ziczac đỏ thời gian thực.</li>
+        <li>✨ <strong>Hologram Robert Brown:</strong> Trồi lên ở góc lề trang 6, chỉ tay vào chiếc kính hiển vi trên bàn học và giải thích thí nghiệm 1827.</li>
+        <li>🧊 <strong>3 Khối hộp Rắn - Lỏng - Khí (Trang 7):</strong> Nén pittông để quan sát tính nén của chất khí so với sự cản trở của chất rắn và lỏng.</li>
+        <li>🔥 <strong>Đèn cồn & Nóng chảy (Trang 8):</strong> Đun lửa làm tinh thể băng tan thành nước lỏng rồi bốc hơi lên không trung!</li>
+      </ul>
+      <button class="btn-action highlight full" onclick="closeHelpModal()">Đã Hiểu, Bắt Đầu Khám Phá!</button>
+    </div>
+  </div>
+
+  <!-- Main 3D Engine Script -->
+  <script src="app.js?v=6.7"></script>
+</body>
+</html>

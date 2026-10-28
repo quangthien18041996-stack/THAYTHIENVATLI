@@ -1,0 +1,7 @@
+# Temporary & cache files
+.edge_temp/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log
