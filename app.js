@@ -333,17 +333,7 @@ function createStudyDeskEnvironment() {
   tableMesh.receiveShadow = true;
   scene.add(tableMesh);
 
-  // Modern study lamp base on desk corner
-  const lampBaseGeom = new THREE.CylinderGeometry(2, 2.3, 0.4, 24);
-  const lampBaseMat = new THREE.MeshStandardMaterial({ color: 0x263238, roughness: 0.3 });
-  const lampBase = new THREE.Mesh(lampBaseGeom, lampBaseMat);
-  lampBase.position.set(15, 0.2, 10);
-  scene.add(lampBase);
 
-  const lampStemGeom = new THREE.CylinderGeometry(0.18, 0.18, 14, 16);
-  const lampStem = new THREE.Mesh(lampStemGeom, lampBaseMat);
-  lampStem.position.set(15, 7, 10);
-  scene.add(lampStem);
 }
 
 // 3D Classic Antique Microscope (Deprecated, now using high-fidelity 3D model)
