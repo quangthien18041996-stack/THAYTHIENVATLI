@@ -247,6 +247,8 @@ function init3DWorld() {
   // Window resize & Raycast events
   window.addEventListener('resize', onWindowResize);
   renderer.domElement.addEventListener('pointerdown', onDocumentPointerDown);
+  renderer.domElement.addEventListener('dblclick', onDocumentDoubleClick);
+  renderer.domElement.addEventListener('pointermove', onDocumentPointerMove);
 
   // Initialize view to Spread 1 (Pages 6 & 7)
   setSpread(1, false);
@@ -435,115 +437,9 @@ function createBadgeCanvas(text, icon, colorHex = '#00e5ff', customWidth = 512) 
 }
 
 function createPaperHotspotBadges() {
-  const badgeGeom = new THREE.PlaneGeometry(4.2, 1.05);
-
-  // 1. Hotspot for Module 1 (Hình 1.1/1.2 trên Trang 6)
-  const matBrown = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi Giọt Nước 3D', '🔬', '#00e5ff'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotBrown = new THREE.Mesh(badgeGeom, matBrown);
-  hotspotBrown.position.set(-5.6, 0.40, 4.2);
-  hotspotBrown.rotation.x = -Math.PI / 2;
-  hotspotBrown.userData = { action: 'toggleBrown' };
-  scene.add(hotspotBrown);
-  clickableHotspots.push(hotspotBrown);
-
-  // 2. Hotspot for Robert Brown Hologram (Hoạt động 2 trên Trang 6)
-  const matHolo = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Gặp Robert Brown', '✨', '#ffd54f'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotHoloBrown = new THREE.Mesh(new THREE.PlaneGeometry(3.8, 0.95), matHolo);
-  hotspotHoloBrown.position.set(-5.6, 0.40, -1.8);
-  hotspotHoloBrown.rotation.x = -Math.PI / 2;
-  hotspotHoloBrown.userData = { action: 'toggleHoloBrown' };
-  scene.add(hotspotHoloBrown);
-  clickableHotspots.push(hotspotHoloBrown);
-
-  // 3. Hotspot for Module 2 (Hình 1.3 trên Trang 7)
-  const matStates = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi 3 Khối Hộp 3D', '🧊', '#00e676'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotStates = new THREE.Mesh(badgeGeom, matStates);
-  hotspotStates.position.set(5.6, 0.40, 0.0);
-  hotspotStates.rotation.x = -Math.PI / 2;
-  hotspotStates.userData = { action: 'toggleStates' };
-  scene.add(hotspotStates);
-  clickableHotspots.push(hotspotStates);
-
-  // 4. Hotspot for Module Triangle Transition (Hình 1.4 trên Trang 7)
-  const matTriangle = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi Tam Giác 3D', '🔄', '#00e5ff'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotTriangle = new THREE.Mesh(badgeGeom, matTriangle);
-  hotspotTriangle.position.set(7.6, 0.40, 6.45);
-  hotspotTriangle.rotation.x = -Math.PI / 2;
-  hotspotTriangle.userData = { action: 'toggleTriangle' };
-  scene.add(hotspotTriangle);
-  clickableHotspots.push(hotspotTriangle);
-
-  // 5. Hotspot for Module 3 (Hình 1.5 & Đèn cồn trên Trang 8)
-  const matMelting = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi Đèn Cồn & Đồ Thị 3D', '🔥', '#ff7043'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotMelting = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 0.90), matMelting);
-  hotspotMelting.position.set(-6.8, 0.40, 2.2);
-  hotspotMelting.rotation.x = -Math.PI / 2;
-  hotspotMelting.userData = { action: 'toggleMelting' };
-  hotspotMelting.visible = false;
-  scene.add(hotspotMelting);
-  clickableHotspots.push(hotspotMelting);
-
-  // 6. Hotspot for Module 4 (Hình 1.6 Tinh thể muối ăn NaCl trên Trang 8)
-  const matNacl = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi Tinh Thể NaCl 3D', '💎', '#00b0ff'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotNacl = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 0.72), matNacl);
-  hotspotNacl.position.set(-2.06, 0.40, 6.25);
-  hotspotNacl.rotation.x = -Math.PI / 2;
-  hotspotNacl.userData = { action: 'toggleNacl' };
-  hotspotNacl.visible = false;
-  scene.add(hotspotNacl);
-  clickableHotspots.push(hotspotNacl);
-
-  // 7. Hotspot for Module 5 (Hình 1.8 Luồng Plasma trên Trang 9)
-  const matPlasma = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi Luồng Plasma 3D', '⚡', '#ff9100'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotPlasma = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 0.85), matPlasma);
-  hotspotPlasma.position.set(7.66, 0.40, 5.85);
-  hotspotPlasma.rotation.x = -Math.PI / 2;
-  hotspotPlasma.userData = { action: 'togglePlasma' };
-  hotspotPlasma.visible = false;
-  scene.add(hotspotPlasma);
-  clickableHotspots.push(hotspotPlasma);
-
-  // 8. Hotspot for Module 6 (Hình 1.7 Đồ Thị Nóng Chảy trên Trang 9)
-  const matMeltingGraph = new THREE.MeshBasicMaterial({
-    map: createBadgeCanvas('Chạm Nổi Đồ Thị Nóng Chảy 3D', '📈', '#00e5ff'),
-    transparent: true,
-    opacity: 0.92
-  });
-  hotspotMeltingGraph = new THREE.Mesh(new THREE.PlaneGeometry(3.8, 0.85), matMeltingGraph);
-  hotspotMeltingGraph.position.set(7.36, 0.40, -1.60);
-  hotspotMeltingGraph.rotation.x = -Math.PI / 2;
-  hotspotMeltingGraph.userData = { action: 'toggleMeltingGraph' };
-  hotspotMeltingGraph.visible = false;
-  scene.add(hotspotMeltingGraph);
-  clickableHotspots.push(hotspotMeltingGraph);
+  // Book pages remain 100% CLEAN and UNOBSTRUCTED!
+  // No badges are pasted over the textbook paragraphs so all text and equations are completely readable.
+  // Users double-click (or double-tap) directly on any figure/image to open or close the 3D Pop-Up!
 }
 
 
@@ -2983,14 +2879,14 @@ function setSpread(spreadIndex, playAudio = true) {
     rightPageMesh.visible = false;
 
     // Hotspots
-    if (hotspotBrown) hotspotBrown.visible = false;
-    if (hotspotHoloBrown) hotspotHoloBrown.visible = false;
-    if (hotspotStates) hotspotStates.visible = false;
-    if (hotspotTriangle) hotspotTriangle.visible = false;
-    if (hotspotMelting) hotspotMelting.visible = false;
-    if (hotspotNacl) hotspotNacl.visible = false;
-    if (hotspotPlasma) hotspotPlasma.visible = false;
-    if (hotspotMeltingGraph) hotspotMeltingGraph.visible = false;
+    // hotspots disabled
+    //
+    //
+    //
+    //
+    //
+    //
+    //
 
   } else if (currentSpread === 1) {
     // Spread 1 (Pages 6 & 7)
@@ -3010,14 +2906,14 @@ function setSpread(spreadIndex, playAudio = true) {
     rightPageMesh.material.needsUpdate = true;
 
     // Show hotspots for Spread 1
-    if (hotspotBrown) hotspotBrown.visible = true;
-    if (hotspotHoloBrown) hotspotHoloBrown.visible = true;
-    if (hotspotStates) hotspotStates.visible = true;
-    if (hotspotTriangle) hotspotTriangle.visible = true;
-    if (hotspotMelting) hotspotMelting.visible = false;
-    if (hotspotNacl) hotspotNacl.visible = false;
-    if (hotspotPlasma) hotspotPlasma.visible = false;
-    if (hotspotMeltingGraph) hotspotMeltingGraph.visible = false;
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
 
   } else if (currentSpread === 2) {
     // Spread 2 (Pages 8 & 9)
@@ -3037,14 +2933,14 @@ function setSpread(spreadIndex, playAudio = true) {
     rightPageMesh.material.needsUpdate = true;
 
     // Show hotspots for Spread 2
-    if (hotspotBrown) hotspotBrown.visible = false;
-    if (hotspotHoloBrown) hotspotHoloBrown.visible = false;
-    if (hotspotStates) hotspotStates.visible = false;
-    if (hotspotTriangle) hotspotTriangle.visible = false;
-    if (hotspotMelting) hotspotMelting.visible = true;
-    if (hotspotNacl) hotspotNacl.visible = true;
-    if (hotspotPlasma) hotspotPlasma.visible = true;
-    if (hotspotMeltingGraph) hotspotMeltingGraph.visible = true;
+    // hotspots disabled
+    //
+    //
+    //
+    //
+    //
+    //
+    //
   }
 }
 
@@ -3059,124 +2955,269 @@ function resetCameraView() {
 
 
 // ============================================================================
-// 14. CLICK RAYCASTING (TOUCH TO POP-UP)
+// 14. INTERACTION SYSTEM: DOUBLE-CLICK / DOUBLE-TAP TO TOGGLE POP-UPS
+// (Book pages are completely clean without any badges blocking text)
 // ============================================================================
-function onDocumentPointerDown(event) {
-  if (event.target.closest('.hud-topbar, .hud-bottom-dock, .scientist-speech-card, .phase-detail-card, .help-card')) {
-    return;
-  }
 
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+let lastPointerTapTime = 0;
+let lastPointerTapPos = { x: 0, y: 0 };
 
+function showDoubleTapRipple(clientX, clientY) {
+  const ripple = document.createElement('div');
+  ripple.className = 'double-tap-ripple';
+  ripple.style.left = `${clientX}px`;
+  ripple.style.top = `${clientY}px`;
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+}
+
+function handleBookDoubleAction(clientX, clientY) {
+  mouse.x = (clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
 
-  // Targets to intersect strictly based on current spread
+  showDoubleTapRipple(clientX, clientY);
+
+  // Targets to intersect
   const targets = [];
 
+  // A. First check if double-clicked on any ACTIVE POPPED 3D MODEL to collapse/fold it!
+  if (isMeltingGraphPopped && meltingGraphGroup && meltingGraphGroup.visible) {
+    targets.push(meltingGraphGroup);
+  }
+  if (isPlasmaPopped && plasmaGroup && plasmaGroup.visible) {
+    targets.push(plasmaGroup);
+  }
+  if (isNaclPopped && naclGroup && naclGroup.visible) {
+    targets.push(naclGroup);
+  }
+  if (isMeltingPopped && module3Group && module3Group.visible) {
+    targets.push(module3Group);
+  }
+  if (isTrianglePopped && triangleModuleGroup && triangleModuleGroup.visible) {
+    targets.push(triangleModuleGroup);
+  }
+  if (isStatesPopped && module2Group && module2Group.visible) {
+    targets.push(module2Group);
+  }
+  if (isBrownPopped && waterDropMesh && waterDropMesh.visible) {
+    targets.push(waterDropMesh);
+    if (pollenGrainMesh) targets.push(pollenGrainMesh);
+  }
+  if (isBrownHoloPopped && brownAvatarMesh && brownAvatarMesh.visible) {
+    targets.push(brownAvatarMesh);
+  }
+
+  // B. Also add the book page leaves
   if (currentSpread === 0) {
     if (frontCoverMesh && frontCoverMesh.visible) targets.push(frontCoverMesh);
   } else {
-    // Current open page leaves
     if (leftPageMesh && leftPageMesh.visible) targets.push(leftPageMesh);
     if (rightPageMesh && rightPageMesh.visible) targets.push(rightPageMesh);
+  }
 
-    // Active paper hotspots on the current spread
-    targets.push(...clickableHotspots.filter(h => h && h.visible));
+  const intersects = raycaster.intersectObjects(targets, true);
+  if (intersects.length === 0) return;
 
-    // Active 3D arrows / interactive parts
-    targets.push(...clickablePhaseArrows.filter(a => a && a.visible));
+  const hitObj = intersects[0].object;
 
-    // Interactive popped models
-    if (isBrownPopped) {
-      if (waterDropMesh) targets.push(waterDropMesh);
-      if (pollenGrainMesh) targets.push(pollenGrainMesh);
+  // 1. Double-click on any active popped 3D model -> TOGGLE OFF (Close/Fold)
+  function isDescendantOf(child, parent) {
+    let curr = child;
+    while (curr) {
+      if (curr === parent) return true;
+      curr = curr.parent;
     }
-    if (isBrownHoloPopped && brownAvatarMesh) {
-      targets.push(brownAvatarMesh);
+    return false;
+  }
+
+  if (isMeltingGraphPopped && isDescendantOf(hitObj, meltingGraphGroup)) {
+    toggleMeltingGraphPopup();
+    return;
+  }
+  if (isPlasmaPopped && isDescendantOf(hitObj, plasmaGroup)) {
+    togglePlasmaPopup();
+    return;
+  }
+  if (isNaclPopped && isDescendantOf(hitObj, naclGroup)) {
+    toggleModule4Popup();
+    return;
+  }
+  if (isMeltingPopped && isDescendantOf(hitObj, module3Group)) {
+    toggleModule3Popup();
+    return;
+  }
+  if (isTrianglePopped && isDescendantOf(hitObj, triangleModuleGroup)) {
+    toggleTrianglePopup();
+    return;
+  }
+  if (isStatesPopped && isDescendantOf(hitObj, module2Group)) {
+    toggleModule2Popup();
+    return;
+  }
+  if (isBrownPopped && (hitObj === waterDropMesh || hitObj === pollenGrainMesh || isDescendantOf(hitObj, waterDropMesh))) {
+    toggleModule1Popup();
+    return;
+  }
+  if (isBrownHoloPopped && (hitObj === brownAvatarMesh || isDescendantOf(hitObj, brownAvatarMesh))) {
+    toggleRobertBrownHologram();
+    return;
+  }
+
+  // 2. Double-click on Front Cover (Spread 0) -> Open book
+  if (currentSpread === 0 && (hitObj === frontCoverMesh || isDescendantOf(hitObj, frontCoverMesh))) {
+    setSpread(1);
+    playSound('pop');
+    return;
+  }
+
+  // 3. Double-click on Book Page Surface -> Toggle corresponding 3D Pop-Up!
+  // Find intersection with the page surface
+  const pageIntersect = intersects.find(i => i.object.userData && i.object.userData.isPage);
+  if (pageIntersect) {
+    const pageObj = pageIntersect.object;
+    const uv = pageIntersect.uv;
+
+    if (pageObj.userData.side === 'left' && currentSpread === 1) {
+      // Trang 6 (Spread 1 Left Page)
+      if (uv && uv.y < 0.45) {
+        // Lower region: Hình 1.1 / Chuyển động Brown giọt nước
+        toggleModule1Popup();
+      } else {
+        // Upper region: Chân dung Robert Brown & Lịch sử
+        toggleRobertBrownHologram();
+      }
+    } else if (pageObj.userData.side === 'right' && currentSpread === 1) {
+      // Trang 7 (Spread 1 Right Page)
+      if (uv && uv.y > 0.40) {
+        // Upper region: Hình 1.3: 3 Thể Rắn - Lỏng - Khí
+        toggleModule2Popup();
+      } else {
+        // Lower region: Hình 1.4: Tam Giác Chuyển Thể
+        toggleTrianglePopup();
+      }
+    } else if (pageObj.userData.side === 'left' && currentSpread === 2) {
+      // Trang 8 (Spread 2 Left Page)
+      if (uv && uv.x > 0.60 && uv.y < 0.40) {
+        // Bottom right: Hình 1.6 Tinh thể muối ăn NaCl
+        toggleModule4Popup();
+      } else {
+        // Main area: Hình 1.5 Đèn cồn & Đồ thị sôi
+        toggleModule3Popup();
+      }
+    } else if (pageObj.userData.side === 'right' && currentSpread === 2) {
+      // Trang 9 (Spread 2 Right Page)
+      if (uv && uv.y < 0.42) {
+        // Bottom area: Hình 1.8 Thể Plasma Mặt Trời
+        togglePlasmaPopup();
+      } else {
+        // Upper area: Hình 1.7 Đồ thị nóng chảy chất rắn kết tinh
+        toggleMeltingGraphPopup();
+      }
     }
-    if (isStatesPopped) {
-      if (solidPiston) targets.push(solidPiston);
-      if (liquidPiston) targets.push(liquidPiston);
-      if (gasPiston) targets.push(gasPiston);
-    }
+  }
+}
+
+// Double click handler for Desktop
+function onDocumentDoubleClick(event) {
+  if (event.target.closest('.hud-topbar, .hud-bottom-dock, .scientist-speech-card, .phase-detail-card, .melting-graph-detail-card, .plasma-detail-card, .help-backdrop')) {
+    return;
+  }
+  handleBookDoubleAction(event.clientX, event.clientY);
+}
+
+// Single click handler for interactive sub-parts (Pistons, Phase Arrows, Scientist speech)
+function onDocumentPointerDown(event) {
+  if (event.target.closest('.hud-topbar, .hud-bottom-dock, .scientist-speech-card, .phase-detail-card, .melting-graph-detail-card, .plasma-detail-card, .help-backdrop')) {
+    return;
+  }
+
+  // Check double-tap on mobile/touch devices
+  const now = performance.now();
+  const dx = event.clientX - lastPointerTapPos.x;
+  const dy = event.clientY - lastPointerTapPos.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (now - lastPointerTapTime < 340 && dist < 30) {
+    // Detected DOUBLE TAP!
+    handleBookDoubleAction(event.clientX, event.clientY);
+    lastPointerTapTime = 0;
+    return;
+  }
+
+  lastPointerTapTime = now;
+  lastPointerTapPos = { x: event.clientX, y: event.clientY };
+
+  // Single click raycasting for sub-interactions
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+
+  const targets = [];
+
+  // Single click on front cover when closed opens book
+  if (currentSpread === 0 && frontCoverMesh && frontCoverMesh.visible) {
+    targets.push(frontCoverMesh);
+  }
+
+  // Interactive sub-parts of popped models
+  targets.push(...clickablePhaseArrows.filter(a => a && a.visible));
+  if (isStatesPopped) {
+    if (solidPiston) targets.push(solidPiston);
+    if (liquidPiston) targets.push(liquidPiston);
+    if (gasPiston) targets.push(gasPiston);
+  }
+  if (isBrownHoloPopped && brownAvatarMesh) {
+    targets.push(brownAvatarMesh);
   }
 
   const intersects = raycaster.intersectObjects(targets, true);
   if (intersects.length > 0) {
     const hit = intersects[0].object;
 
-    // Check Phase Arrow click (Hoá hơi, Hoá lỏng, ...)
+    // Phase Arrow click (Hoá hơi, Hoá lỏng, ...)
     if (hit.userData && hit.userData.phaseKey) {
       showPhaseDetail(hit.userData.phaseKey);
       return;
     }
 
-    // Check Hotspot Badge clicks on paper
-    if (hit.userData && hit.userData.action) {
-      const act = hit.userData.action;
-      if (act === 'toggleBrown') toggleModule1Popup();
-      else if (act === 'toggleHoloBrown') toggleRobertBrownHologram();
-      else if (act === 'toggleStates') toggleModule2Popup();
-      else if (act === 'toggleTriangle') toggleTrianglePopup();
-      else if (act === 'toggleMelting') toggleModule3Popup();
-      else if (act === 'toggleNacl') toggleModule4Popup();
-      else if (act === 'togglePlasma') togglePlasmaPopup();
-      else if (act === 'toggleMeltingGraph') toggleMeltingGraphPopup();
-      return;
-    }
-
-    // Cover click (only when closed) -> open book to Spread 1
+    // Cover single click
     if (currentSpread === 0 && hit === frontCoverMesh) {
       setSpread(1);
       return;
     }
 
-    // Page Surface click -> check regions
-    if (hit.userData && hit.userData.isPage) {
-      const uv = intersects[0].uv;
-      if (hit.userData.side === 'left' && currentSpread === 1) {
-        // Left page (Trang 6)
-        if (uv && uv.y < 0.45) {
-          toggleModule1Popup();
-        } else if (uv && uv.y >= 0.45) {
-          toggleRobertBrownHologram();
-        }
-      } else if (hit.userData.side === 'right' && currentSpread === 1) {
-        // Right page (Trang 7)
-        if (uv && uv.y > 0.40) {
-          // Upper area (Hình 1.3: 3 Thể Rắn - Lỏng - Khí)
-          toggleModule2Popup();
-        } else if (uv && uv.y <= 0.40) {
-          // Lower area (Hình 1.4: Tam Giác Chuyển Thể)
-          toggleTrianglePopup();
-        }
-      } else if (hit.userData.side === 'left' && currentSpread === 2) {
-        // Trang 8: Figure 1.6 Tinh thể NaCl is at bottom right (u > 0.60, v < 0.38)
-        if (uv && uv.x > 0.60 && uv.y < 0.38) {
-          toggleModule4Popup();
-        } else {
-          toggleModule3Popup();
-        }
-      } else if (hit.userData.side === 'right' && currentSpread === 2) {
-        // Trang 9: Figure 1.8 Luồng Plasma is in the bottom box (uv.y < 0.42)
-        if (uv && uv.y < 0.42) {
-          togglePlasmaPopup();
-        } else {
-          toggleMeltingGraphPopup();
-        }
-      }
+    // Interactive pistons in States module
+    if (hit === solidPiston || hit === liquidPiston || hit === gasPiston) {
+      togglePistonCompression();
       return;
     }
 
-    // Interactions with popped models
-    if (hit === waterDropMesh || hit === pollenGrainMesh) {
-      toggleModule1Popup();
-    } else if (hit === brownAvatarMesh) {
+    // Robert Brown avatar speak
+    if (hit === brownAvatarMesh) {
       speakCurrentScientist();
-    } else if (hit === solidPiston || hit === liquidPiston || hit === gasPiston) {
-      togglePistonCompression();
+      return;
     }
+  }
+}
+
+// Hover cursor pointer over book figures
+function onDocumentPointerMove(event) {
+  if (!leftPageMesh || !camera) return;
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+
+  const targets = [];
+  if (leftPageMesh && leftPageMesh.visible) targets.push(leftPageMesh);
+  if (rightPageMesh && rightPageMesh.visible) targets.push(rightPageMesh);
+  if (frontCoverMesh && frontCoverMesh.visible) targets.push(frontCoverMesh);
+
+  const intersects = raycaster.intersectObjects(targets, false);
+  if (intersects.length > 0) {
+    document.body.style.cursor = 'pointer';
+  } else {
+    document.body.style.cursor = 'default';
   }
 }
 
