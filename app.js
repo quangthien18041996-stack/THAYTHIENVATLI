@@ -2980,6 +2980,8 @@ function setSpread(spreadIndex, playAudio = true) {
   if (isTrianglePopped) toggleTrianglePopup();
   if (isMeltingPopped) toggleModule3Popup();
   if (isNaclPopped) toggleModule4Popup();
+  if (isPlasmaPopped) togglePlasmaPopup();
+  if (isMeltingGraphPopped) toggleMeltingGraphPopup();
   closeScientistSpeech();
   closePhaseDetail();
 
@@ -3055,15 +3057,15 @@ function setSpread(spreadIndex, playAudio = true) {
     leftPageMesh.material.needsUpdate = true;
     rightPageMesh.material.needsUpdate = true;
 
-    // Show hotspots for Spread 2
-    // hotspots disabled
-    //
-    //
-    //
-    //
-    //
-    //
-    //
+    // Show ONLY margin tabs for Spread 2 (Pages 8 & 9)
+    if (hotspotBrown) hotspotBrown.visible = false;
+    if (hotspotHoloBrown) hotspotHoloBrown.visible = false;
+    if (hotspotStates) hotspotStates.visible = false;
+    if (hotspotTriangle) hotspotTriangle.visible = false;
+    if (hotspotMelting) hotspotMelting.visible = true;
+    if (hotspotNacl) hotspotNacl.visible = true;
+    if (hotspotPlasma) hotspotPlasma.visible = true;
+    if (hotspotMeltingGraph) hotspotMeltingGraph.visible = true;
   }
 }
 
