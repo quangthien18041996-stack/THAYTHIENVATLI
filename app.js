@@ -436,10 +436,133 @@ function createBadgeCanvas(text, icon, colorHex = '#00e5ff', customWidth = 512) 
   return new THREE.CanvasTexture(canvas);
 }
 
+function createMarginTabCanvas(text, icon, colorHex = '#00e5ff') {
+  const canvas = document.createElement('canvas');
+  canvas.width = 640;
+  canvas.height = 140;
+  const ctx = canvas.getContext('2d');
+
+  // Pill rounded tab background
+  ctx.fillStyle = 'rgba(8, 14, 28, 0.94)';
+  ctx.strokeStyle = colorHex;
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 40);
+  ctx.fill();
+  ctx.stroke();
+
+  // Glowing pulse border
+  ctx.shadowColor = colorHex;
+  ctx.shadowBlur = 16;
+
+  // Icon & Text
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 30px Nunito, "Segoe UI", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`${icon} ${text}`, canvas.width / 2, canvas.height / 2);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
 function createPaperHotspotBadges() {
-  // Book pages remain 100% CLEAN and UNOBSTRUCTED!
-  // No badges are pasted over the textbook paragraphs so all text and equations are completely readable.
-  // Users double-click (or double-tap) directly on any figure/image to open or close the 3D Pop-Up!
+  // Sleek 3D Pop-Up Margin Tabs placed strictly on the outer margins of the book!
+  // NEVER COVERS ANY TEXT OR EQUATIONS OF THE BOOK!
+  const tabGeom = new THREE.PlaneGeometry(3.3, 0.78);
+
+  // 1. Tab for Module 1 (Hình 1.1/1.2 trên Trang 6) - Lề ngoài trang 6 (phía dưới)
+  hotspotBrown = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Giọt Nước Brown 3D', '🔬', '#00e5ff'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotBrown.position.set(-11.0, 0.42, 3.8);
+  hotspotBrown.rotation.x = -Math.PI / 2;
+  hotspotBrown.userData = { action: 'toggleBrown' };
+  scene.add(hotspotBrown);
+  clickableHotspots.push(hotspotBrown);
+
+  // 2. Tab for Robert Brown Hologram (Trang 6) - Lề ngoài trang 6 (phía trên)
+  hotspotHoloBrown = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Gặp Robert Brown', '✨', '#ffd54f'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotHoloBrown.position.set(-11.0, 0.42, -3.8);
+  hotspotHoloBrown.rotation.x = -Math.PI / 2;
+  hotspotHoloBrown.userData = { action: 'toggleHoloBrown' };
+  scene.add(hotspotHoloBrown);
+  clickableHotspots.push(hotspotHoloBrown);
+
+  // 3. Tab for Module 2 (Hình 1.3 trên Trang 7) - Lề ngoài trang 7 (phía trên)
+  hotspotStates = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('3 Khối Hộp 3 Thể', '🧊', '#00e676'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotStates.position.set(11.0, 0.42, -3.8);
+  hotspotStates.rotation.x = -Math.PI / 2;
+  hotspotStates.userData = { action: 'toggleStates' };
+  scene.add(hotspotStates);
+  clickableHotspots.push(hotspotStates);
+
+  // 4. Tab for Module Triangle (Hình 1.4 trên Trang 7) - Lề ngoài trang 7 (phía dưới)
+  hotspotTriangle = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Tam Giác Chuyển Thể', '🔄', '#00e5ff'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotTriangle.position.set(11.0, 0.42, 4.2);
+  hotspotTriangle.rotation.x = -Math.PI / 2;
+  hotspotTriangle.userData = { action: 'toggleTriangle' };
+  scene.add(hotspotTriangle);
+  clickableHotspots.push(hotspotTriangle);
+
+  // 5. Tab for Module 3 (Hình 1.5 trên Trang 8) - Lề ngoài trang 8 (phía trên)
+  hotspotMelting = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Đèn Cồn & Đồ Thị Sôi', '🔥', '#ff7043'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotMelting.position.set(-11.0, 0.42, -3.8);
+  hotspotMelting.rotation.x = -Math.PI / 2;
+  hotspotMelting.userData = { action: 'toggleMelting' };
+  hotspotMelting.visible = false;
+  scene.add(hotspotMelting);
+  clickableHotspots.push(hotspotMelting);
+
+  // 6. Tab for Module 4 (Hình 1.6 Tinh thể NaCl trên Trang 8) - Lề ngoài trang 8 (phía dưới)
+  hotspotNacl = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Tinh Thể Muối NaCl', '💎', '#00b0ff'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotNacl.position.set(-11.0, 0.42, 4.2);
+  hotspotNacl.rotation.x = -Math.PI / 2;
+  hotspotNacl.userData = { action: 'toggleNacl' };
+  hotspotNacl.visible = false;
+  scene.add(hotspotNacl);
+  clickableHotspots.push(hotspotNacl);
+
+  // 7. Tab for Module 6 (Hình 1.7 Đồ Thị Nóng Chảy trên Trang 9) - Lề ngoài trang 9 (phía trên)
+  hotspotMeltingGraph = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Đồ Thị Nóng Chảy 3D', '📈', '#00e5ff'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotMeltingGraph.position.set(11.0, 0.42, -3.8);
+  hotspotMeltingGraph.rotation.x = -Math.PI / 2;
+  hotspotMeltingGraph.userData = { action: 'toggleMeltingGraph' };
+  hotspotMeltingGraph.visible = false;
+  scene.add(hotspotMeltingGraph);
+  clickableHotspots.push(hotspotMeltingGraph);
+
+  // 8. Tab for Module 5 (Hình 1.8 Luồng Plasma trên Trang 9) - Lề ngoài trang 9 (phía dưới)
+  hotspotPlasma = new THREE.Mesh(tabGeom, new THREE.MeshBasicMaterial({
+    map: createMarginTabCanvas('Thể Plasma Mặt Trời', '⚡', '#ff9100'),
+    transparent: true, opacity: 0.95
+  }));
+  hotspotPlasma.position.set(11.0, 0.42, 4.2);
+  hotspotPlasma.rotation.x = -Math.PI / 2;
+  hotspotPlasma.userData = { action: 'togglePlasma' };
+  hotspotPlasma.visible = false;
+  scene.add(hotspotPlasma);
+  clickableHotspots.push(hotspotPlasma);
 }
 
 
@@ -539,13 +662,13 @@ function toggleModule1Popup() {
     if (btn) btn.textContent = "✕ Thu Gọn Giọt Nước";
     if (ctrlTemp) ctrlTemp.style.display = 'flex';
     if (btnTrail) btnTrail.style.display = 'inline-block';
-    if (hotspotBrown) hotspotBrown.material.map = createBadgeCanvas('✕ Thu Gọn Giọt Nước', '✕', '#ff5252');
+    if (hotspotBrown) hotspotBrown.material.map = createMarginTabCanvas('Thu Gọn Giọt Nước', '✕', '#ff5252');
   } else {
     foldIn3D(brownModuleGroup);
     if (btn) btn.textContent = "🔍 Mở Giọt Nước 3D (Đang gập)";
     if (ctrlTemp) ctrlTemp.style.display = 'none';
     if (btnTrail) btnTrail.style.display = 'none';
-    if (hotspotBrown) hotspotBrown.material.map = createBadgeCanvas('Chạm Nổi Giọt Nước 3D', '🔬', '#00e5ff');
+    if (hotspotBrown) hotspotBrown.material.map = createMarginTabCanvas('Giọt Nước Brown 3D', '🔬', '#00e5ff');
   }
 }
 
@@ -770,14 +893,14 @@ function toggleRobertBrownHologram() {
     popOut3D(hologramGroupBrown);
     if (hologramGroupEinstein) foldIn3D(hologramGroupEinstein);
     if (btn) btn.textContent = "✕ Thu Gọn Hologram";
-    if (hotspotHoloBrown) hotspotHoloBrown.material.map = createBadgeCanvas('✕ Thu Gọn Hologram', '✕', '#ff5252');
+    if (hotspotHoloBrown) hotspotHoloBrown.material.map = createMarginTabCanvas('Thu Gọn Hologram', '✕', '#ff5252');
     displayScientistDialogue('brown');
     playSound('summon');
   } else {
     foldIn3D(hologramGroupBrown);
     closeScientistSpeech();
     if (btn) btn.textContent = "✨ Gặp Robert Brown";
-    if (hotspotHoloBrown) hotspotHoloBrown.material.map = createBadgeCanvas('Chạm Gặp Robert Brown', '✨', '#ffd54f');
+    if (hotspotHoloBrown) hotspotHoloBrown.material.map = createMarginTabCanvas('Gặp Robert Brown', '✨', '#ffd54f');
   }
 }
 
@@ -974,13 +1097,13 @@ function toggleModule2Popup() {
     if (btn) btn.textContent = "✕ Thu Gọn 3 Khối Hộp";
     if (btnSprings) btnSprings.style.display = 'inline-block';
     if (btnPiston) btnPiston.style.display = 'inline-block';
-    if (hotspotStates) hotspotStates.material.map = createBadgeCanvas('✕ Thu Gọn 3 Khối Hộp', '✕', '#ff5252');
+    if (hotspotStates) hotspotStates.material.map = createMarginTabCanvas('Thu Gọn 3 Khối Hộp', '✕', '#ff5252');
   } else {
     foldIn3D(module2Group);
     if (btn) btn.textContent = "🧊 Mở 3 Khối Hộp 3D (Đang gập)";
     if (btnSprings) btnSprings.style.display = 'none';
     if (btnPiston) btnPiston.style.display = 'none';
-    if (hotspotStates) hotspotStates.material.map = createBadgeCanvas('Chạm Nổi 3 Khối Hộp 3D', '🧊', '#00e676');
+    if (hotspotStates) hotspotStates.material.map = createMarginTabCanvas('3 Khối Hộp 3 Thể', '🧊', '#00e676');
   }
 }
 
@@ -1385,13 +1508,13 @@ function toggleTrianglePopup() {
   if (isTrianglePopped) {
     popOut3D(triangleModuleGroup);
     if (btn) btn.textContent = "✕ Thu Gọn Tam Giác";
-    if (hotspotTriangle) hotspotTriangle.material.map = createBadgeCanvas('✕ Thu Gọn Tam Giác', '✕', '#ff5252');
+    if (hotspotTriangle) hotspotTriangle.material.map = createMarginTabCanvas('Thu Gọn Tam Giác', '✕', '#ff5252');
     showPhaseDetail('hoa-hoi');
   } else {
     foldIn3D(triangleModuleGroup);
     closePhaseDetail();
     if (btn) btn.textContent = "🔄 Mở Tam Giác Chuyển Thể (Đang gập)";
-    if (hotspotTriangle) hotspotTriangle.material.map = createBadgeCanvas('Chạm Nổi Tam Giác 3D', '🔄', '#00e5ff');
+    if (hotspotTriangle) hotspotTriangle.material.map = createMarginTabCanvas('Tam Giác Chuyển Thể', '🔄', '#00e5ff');
   }
 }
 
@@ -1791,13 +1914,13 @@ function toggleModule3Popup() {
     if (btn) btn.textContent = "✕ Thu Gọn Đèn Cồn & Đồ Thị";
     if (btnPlay) btnPlay.style.display = 'inline-block';
     if (lbl) lbl.style.display = 'inline-block';
-    if (hotspotMelting) hotspotMelting.material.map = createBadgeCanvas('✕ Thu Gọn Đồ Thị 3D', '✕', '#ff5252');
+    if (hotspotMelting) hotspotMelting.material.map = createMarginTabCanvas('Thu Gọn Đèn Cồn', '✕', '#ff5252');
   } else {
     foldIn3D(module3Group);
     if (btn) btn.textContent = "🔥 Mở Đèn Cồn & Đồ Thị 3D (Đang gập)";
     if (btnPlay) btnPlay.style.display = 'none';
     if (lbl) lbl.style.display = 'none';
-    if (hotspotMelting) hotspotMelting.material.map = createBadgeCanvas('Chạm Nổi Đèn Cồn & Đồ Thị 3D', '🔥', '#ff7043');
+    if (hotspotMelting) hotspotMelting.material.map = createMarginTabCanvas('Đèn Cồn & Đồ Thị Sôi', '🔥', '#ff7043');
   }
 }
 
@@ -1958,12 +2081,12 @@ function toggleModule4Popup() {
   if (isNaclPopped) {
     popOut3D(naclGroup);
     if (btn) btn.textContent = "✕ Thu Gọn NaCl";
-    if (hotspotNacl) hotspotNacl.material.map = createBadgeCanvas('✕ Thu Gọn NaCl', '✕', '#ff5252');
+    if (hotspotNacl) hotspotNacl.material.map = createMarginTabCanvas('Thu Gọn NaCl', '✕', '#ff5252');
     flyCameraTo(-2.06, 1.4, 4.95, -2.06, 4.6, 8.8, 850);
   } else {
     foldIn3D(naclGroup);
     if (btn) btn.textContent = "💎 Mở Mạng Tinh Thể NaCl (Đang gập)";
-    if (hotspotNacl) hotspotNacl.material.map = createBadgeCanvas('Chạm Nổi Tinh Thể NaCl 3D', '💎', '#00b0ff');
+    if (hotspotNacl) hotspotNacl.material.map = createMarginTabCanvas('Tinh Thể Muối NaCl', '💎', '#00b0ff');
     flyCameraTo(0, 1.2, 0, 0, 22, 23, 750);
   }
 }
@@ -2236,7 +2359,7 @@ function togglePlasmaPopup() {
     popOut3D(plasmaGroup);
     playSound('pop');
     if (btn) btn.textContent = "✕ Thu Gọn Plasma";
-    if (hotspotPlasma) hotspotPlasma.material.map = createBadgeCanvas('✕ Thu Gọn Plasma', '✕', '#ff5252');
+    if (hotspotPlasma) hotspotPlasma.material.map = createMarginTabCanvas('Thu Gọn Plasma', '✕', '#ff5252');
     showPlasmaDetailCard();
     setTimeout(speakPlasmaExplanation, 300);
     flyCameraTo(6.2, 1.45, 3.50, 6.2, 4.6, 7.6, 850);
@@ -2245,7 +2368,7 @@ function togglePlasmaPopup() {
     stopPlasmaSpeech();
     closePlasmaDetailCard();
     if (btn) btn.textContent = "⚡ Mở Luồng Plasma 3D (Đang gập)";
-    if (hotspotPlasma) hotspotPlasma.material.map = createBadgeCanvas('Chạm Nổi Luồng Plasma 3D', '⚡', '#ff9100');
+    if (hotspotPlasma) hotspotPlasma.material.map = createMarginTabCanvas('Thể Plasma Mặt Trời', '⚡', '#ff9100');
     flyCameraTo(0, 1.2, 0, 0, 22, 23, 750);
   }
 }
@@ -2714,7 +2837,7 @@ function toggleMeltingGraphPopup() {
     playSound('pop');
     if (btn) btn.textContent = "📦 Thu Gọn Đồ Thị 3D";
     if (btnPlay) btnPlay.style.display = 'inline-block';
-    if (hotspotMeltingGraph) hotspotMeltingGraph.material.map = createBadgeCanvas('📦 Thu Gọn Đồ Thị', '📉', '#ff5252');
+    if (hotspotMeltingGraph) hotspotMeltingGraph.material.map = createMarginTabCanvas('Thu Gọn Đồ Thị', '✕', '#ff5252');
     showMeltingGraphDetailCard();
     setTimeout(speakMeltingGraphExplanation, 400);
     // Smoothly fly camera to close-up frontal view of Figure 1.7!
@@ -2725,7 +2848,7 @@ function toggleMeltingGraphPopup() {
     closeMeltingGraphDetailCard();
     if (btn) btn.textContent = "📈 Mở Đồ Thị Nóng Chảy 3D (Đang gập)";
     if (btnPlay) btnPlay.style.display = 'none';
-    if (hotspotMeltingGraph) hotspotMeltingGraph.material.map = createBadgeCanvas('Chạm Nổi Đồ Thị Nóng Chảy 3D', '📈', '#00e5ff');
+    if (hotspotMeltingGraph) hotspotMeltingGraph.material.map = createMarginTabCanvas('Đồ Thị Nóng Chảy 3D', '📈', '#00e5ff');
     // Return to book spread overview
     flyCameraTo(0, 1.2, 0, 0, 22, 23, 750);
   }
@@ -2879,14 +3002,14 @@ function setSpread(spreadIndex, playAudio = true) {
     rightPageMesh.visible = false;
 
     // Hotspots
-    // hotspots disabled
-    //
-    //
-    //
-    //
-    //
-    //
-    //
+    if (hotspotBrown) hotspotBrown.visible = false;
+    if (hotspotHoloBrown) hotspotHoloBrown.visible = false;
+    if (hotspotStates) hotspotStates.visible = false;
+    if (hotspotTriangle) hotspotTriangle.visible = false;
+    if (hotspotMelting) hotspotMelting.visible = false;
+    if (hotspotNacl) hotspotNacl.visible = false;
+    if (hotspotPlasma) hotspotPlasma.visible = false;
+    if (hotspotMeltingGraph) hotspotMeltingGraph.visible = false;
 
   } else if (currentSpread === 1) {
     // Spread 1 (Pages 6 & 7)
@@ -2905,15 +3028,15 @@ function setSpread(spreadIndex, playAudio = true) {
     leftPageMesh.material.needsUpdate = true;
     rightPageMesh.material.needsUpdate = true;
 
-    // Show hotspots for Spread 1
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
+    // Show margin tabs for Spread 1 (Pages 6 & 7)
+    if (hotspotBrown) hotspotBrown.visible = true;
+    if (hotspotHoloBrown) hotspotHoloBrown.visible = true;
+    if (hotspotStates) hotspotStates.visible = true;
+    if (hotspotTriangle) hotspotTriangle.visible = true;
+    if (hotspotMelting) hotspotMelting.visible = false;
+    if (hotspotNacl) hotspotNacl.visible = false;
+    if (hotspotPlasma) hotspotPlasma.visible = false;
+    if (hotspotMeltingGraph) hotspotMeltingGraph.visible = false;
 
   } else if (currentSpread === 2) {
     // Spread 2 (Pages 8 & 9)
@@ -3008,7 +3131,9 @@ function handleBookDoubleAction(clientX, clientY) {
     targets.push(brownAvatarMesh);
   }
 
-  // B. Also add the book page leaves
+  // B. Margin Tabs (Nút chạm nổi lề sách) & Book page leaves
+  targets.push(...clickableHotspots.filter(h => h && h.visible));
+
   if (currentSpread === 0) {
     if (frontCoverMesh && frontCoverMesh.visible) targets.push(frontCoverMesh);
   } else {
@@ -3020,6 +3145,20 @@ function handleBookDoubleAction(clientX, clientY) {
   if (intersects.length === 0) return;
 
   const hitObj = intersects[0].object;
+
+    // Check Margin Tab action
+  if (hitObj.userData && hitObj.userData.action) {
+    const act = hitObj.userData.action;
+    if (act === 'toggleBrown') toggleModule1Popup();
+    else if (act === 'toggleHoloBrown') toggleRobertBrownHologram();
+    else if (act === 'toggleStates') toggleModule2Popup();
+    else if (act === 'toggleTriangle') toggleTrianglePopup();
+    else if (act === 'toggleMelting') toggleModule3Popup();
+    else if (act === 'toggleNacl') toggleModule4Popup();
+    else if (act === 'togglePlasma') togglePlasmaPopup();
+    else if (act === 'toggleMeltingGraph') toggleMeltingGraphPopup();
+    return;
+  }
 
   // 1. Double-click on any active popped 3D model -> TOGGLE OFF (Close/Fold)
   function isDescendantOf(child, parent) {
@@ -3160,7 +3299,8 @@ function onDocumentPointerDown(event) {
     targets.push(frontCoverMesh);
   }
 
-  // Interactive sub-parts of popped models
+  // Active Margin Tabs & interactive sub-parts
+  targets.push(...clickableHotspots.filter(h => h && h.visible));
   targets.push(...clickablePhaseArrows.filter(a => a && a.visible));
   if (isStatesPopped) {
     if (solidPiston) targets.push(solidPiston);
@@ -3174,6 +3314,20 @@ function onDocumentPointerDown(event) {
   const intersects = raycaster.intersectObjects(targets, true);
   if (intersects.length > 0) {
     const hit = intersects[0].object;
+
+        // Single click on Margin Tab button also activates/deactivates!
+    if (hit.userData && hit.userData.action) {
+      const act = hit.userData.action;
+      if (act === 'toggleBrown') toggleModule1Popup();
+      else if (act === 'toggleHoloBrown') toggleRobertBrownHologram();
+      else if (act === 'toggleStates') toggleModule2Popup();
+      else if (act === 'toggleTriangle') toggleTrianglePopup();
+      else if (act === 'toggleMelting') toggleModule3Popup();
+      else if (act === 'toggleNacl') toggleModule4Popup();
+      else if (act === 'togglePlasma') togglePlasmaPopup();
+      else if (act === 'toggleMeltingGraph') toggleMeltingGraphPopup();
+      return;
+    }
 
     // Phase Arrow click (Hoá hơi, Hoá lỏng, ...)
     if (hit.userData && hit.userData.phaseKey) {
